@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { MenuOption } from './MenuOption'
 function Detail() {
   return (
     <div className="detail flex-1 m-2 relative">
@@ -11,7 +12,11 @@ function Detail() {
         <p>Online</p>
       </div>
       <div className="info p-5 flex flex-col gap-7 overflow-y-hidden">
-        <div className="option ">
+        <MenuOption title='Chat Settings'/>
+        <MenuOption title='Privacy'/>
+        <MenuOption title='Shared Photos'/>
+        {/* <MenuOption title='Chat Settings'/> */}
+        {/* <div className="option ">
           <div className="title flex items-center justify-between cursor-pointer">
             <span>Chat Settings</span>
             <img className="w-3 h-3 bg-myBlue p-3 rounded-full" src="./arrowUp.png" alt="" />
@@ -28,7 +33,7 @@ function Detail() {
             <span>Shared Photos</span>
             <img className="w-3 h-3 bg-myBlue p-3 rounded-full" src="./arrowUp.png" alt="" />
           </div>
-        </div>
+        </div> */}
 
 
 

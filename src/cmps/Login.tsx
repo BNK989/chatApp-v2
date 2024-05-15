@@ -1,7 +1,8 @@
-import { useState } from 'react'
-// import Notifications from '../notifications'
+import { FormEvent, useState } from 'react'
+import { useToast } from "@/components/ui/use-toast"
 
 export function Login(){
+  const { toast } = useToast()
 
   const [avatar, setAvatar] = useState({
     file:null,
@@ -13,11 +14,28 @@ export function Login(){
     setAvatar({file: e.target.files[0], 
     url: URL.createObjectURL(e.target.files[0])})
   }
+
+  const handleLogin = (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    // console.log('e.target.value:', e.target.value)
+    toast({
+      // type: "success",
+      // variant: 'destructive',
+      className: "bg-black text-white border-none left-[-100px]",
+      title: "Welcome",
+      description: "Friday, February 10, 2023 at 5:57 PM",
+      duration: 4000,
+      
+    })
+
+  }
+
+
   return (
     <div className='login w-full h-full items-center flex'>
       <div className="item flex flex-1 flex-col gap-5 items-center">
         <h2>Welcome back,</h2>
-        <form className='flex flex-col items-center justify-center gap-5'>
+        <form onSubmit={handleLogin} className='flex flex-col items-center justify-center gap-5'>
           <input className='p-2 bg-myBlue rounded-sm outline-none text-slate-200' type="text" placeholder='Email' name='Email'/>
           <input className='p-2 bg-myBlue rounded-sm outline-none text-slate-200' type="password" placeholder='password' name='password' />
           <button className='w-full py-3 rounded-md bg-blue-600 font-medium cursor-pointer'>Sign in</button>

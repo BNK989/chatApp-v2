@@ -1,5 +1,6 @@
 import { useState, useRef } from "react"
 import { MsgItem } from "./MsgItem"
+import { AddUser } from "./AddUser"
 
 function ChatList() {
   const [addMode, setAddMode] = useState(false)
@@ -13,6 +14,7 @@ function ChatList() {
   }
 
   return (
+    <>
     <div
       className={`relative chatList flex-1 overflow-y-auto ${isScrolling ? "scrolling" : ""}`}
       onScroll={handleScroll}
@@ -45,6 +47,8 @@ function ChatList() {
       <MsgItem/>
       <MsgItem/>
     </div>
+      {addMode && <AddUser/>}
+  </>
   )
 }
 
