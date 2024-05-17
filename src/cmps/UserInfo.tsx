@@ -1,5 +1,5 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { useUserStore } from "@/lib/userStore"
+import { QuickAvatar } from "./QuickAvatar"
 
 
 export function UserInfo() {
@@ -9,10 +9,7 @@ export function UserInfo() {
   return (
     <div className="userInfo p-5 flex items-center justify-between">
       <div className="user flex items-center gap-5">
-        <Avatar className="w-12 h-12">
-          <AvatarImage src={currentUser?.avatar || "./avatar.png"} />
-          {/* <AvatarFallback>CN</AvatarFallback> */}
-        </Avatar>
+        <QuickAvatar user={currentUser!}/>
         <h2>{currentUser!.username}</h2>
       </div>
       <div className="icons flex gap-5">
