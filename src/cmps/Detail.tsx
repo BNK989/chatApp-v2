@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MenuOption } from './MenuOption'
-function Detail() {
+import { auth } from '@/lib/firebase'
+export function Detail() {
   return (
     <div className="detail flex-1 m-2 relative">
       <div className="user py-5 px-5 flex flex-col items-center gap-5 border-b border-myBorder ">
@@ -58,11 +59,11 @@ function Detail() {
         </div> */}
         <div className='absolute bottom-4 left-0 flex justify-evenly w-full'>
         <button className="py-3 px-5 bg-red-700 bg-opacity-50 text-white rounded-s hover:bg-opacity-75 transition-colors">Block User</button>
-        <button className="py-2 px-3 bg-blue-500 bg-opacity-50 text-white rounded-s hover:bg-opacity-75 transition-colors">Log Out</button>
+        <button 
+          onClick={() => {auth.signOut()}} 
+          className="py-2 px-3 bg-blue-500 bg-opacity-50 text-white rounded-s hover:bg-opacity-75 transition-colors">Log Out</button>
         </div>
       </div>
     </div>
   )
 }
-
-export default Detail

@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
-import { BlockList } from 'net'
+// import { BlockList } from 'net'
 import { upload } from '@/lib/upload'
 import { RotatingLines } from 'react-loader-spinner'
 
@@ -27,17 +27,38 @@ export function Login() {
         setAvatar({ file: e.target.files[0], url: URL.createObjectURL(e.target.files[0]) })
     }
 
-    const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        // console.log('e.target.value:', e.target.value)
-        toast({
-            // type: "success",
-            // variant: 'destructive',
-            className: 'bg-black text-white border-none left-[-100px]',
-            title: 'Welcome',
-            description: 'Friday, February 10, 2023 at 5:57 PM',
-            duration: 4000,
-        })
+        const formData = new FormData(e.currentTarget)
+        const formDataObject = Object.fromEntries(formData) as UserRegistration
+        const { email, password } = formDataObject
+        console.log('formDataObject:', formDataObject)
+        
+        if (!email || !password) return
+        setLoading(true)
+        try{
+          console.log('trying:')
+          await signInWithEmailAndPassword(auth, email, password)
+
+          toast({
+            className: 'bg-black text-white border-none left-[-100px] border-b-2 border-green-500',
+            title: 'Success',
+            description: 'Logged in successfully',
+            
+          })
+        }
+        catch(err){
+            console.error(err)
+            toast({
+                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-red-500',
+                title: 'Error while logging in',
+                description: 'Please try again',
+                
+            })
+        }
+        finally{
+          setLoading(false)
+        }
     }
 
     const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
@@ -80,7 +101,7 @@ export function Login() {
     }
 
     return (
-        <div className="login w-full h-full items-center flex">
+        <div className="login w-full h-full items-center flex ">
             <div className="item flex flex-1 flex-col gap-5 items-center">
                 <h2>Welcome back,</h2>
                 <form onSubmit={handleLogin} className="flex flex-col items-center justify-center gap-5">
@@ -88,7 +109,7 @@ export function Login() {
                         className="p-2 bg-myBlue rounded-sm outline-none text-slate-200"
                         type="text"
                         placeholder="Email"
-                        name="Email"
+                        name="email"
                     />
                     <input
                         className="p-2 bg-myBlue rounded-sm outline-none text-slate-200"

@@ -2,9 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import EmojiPicker from 'emoji-picker-react'
 import React, { useEffect } from 'react'
-import { AddUser } from './AddUser'
+// import { AddUser } from './AddUser'
 
-function Chat() {
+export function Chat() {
     const [isEmojiOpen, setIsEmojiOpen] = React.useState(false)
     const [text, setText] = React.useState('')
     const endRef = React.useRef<HTMLDivElement>(null!)
@@ -207,5 +207,3 @@ function Chat() {
         </div>
     )
 }
-
-export default Chat
