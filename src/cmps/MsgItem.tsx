@@ -12,7 +12,7 @@ export function MsgItem({msg, user, isMe}: {msg : any, user: User, isMe: boolean
     <QuickAvatar user={user}/>
     <div className="texts flex flex-col">
         {msg.img && <img
-            className="max-w-[70%] max-h-[70%] object-cover rounded my-1"
+            className={`max-w-[70%] max-h-[70%] object-cover rounded my-1 ${isMe ? 'self-end' : 'self-start'}`}
             src={msg.img}
             alt=""
         />}

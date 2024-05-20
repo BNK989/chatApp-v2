@@ -19,10 +19,8 @@ export function AddUser() {
             const userRef = collection(db, 'users')
             const q = query(userRef, where('username', '==', username))
             const querySnapshot = await getDocs(q)
-            console.log(username)
             if (!querySnapshot.empty) {
                 setUser(querySnapshot.docs[0].data() as User)
-                console.log('user:', user)
             }
         } catch (error) {
             console.error(error)

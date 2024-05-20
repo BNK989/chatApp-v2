@@ -7,12 +7,16 @@ import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firesto
 import React, { useEffect, useRef, useState } from 'react'
 import { MsgItem } from './MsgItem'
 import { useUserStore } from '@/lib/userStore'
+import { QuickAvatar } from './QuickAvatar'
+import { ChatText, Message } from '@/models/chat.model'
+import { upload } from '@/lib/upload'
 // import { AddUser } from './AddUser'
 
 export function Chat() {
-    const [chat, setChat] = useState({createdAt: Date, messages: []})
+    const [chat, setChat] = useState<ChatText|object|any>({})
     const [isEmojiOpen, setIsEmojiOpen] = useState(false)
     const [text, setText] = useState('')
+    const [img, setImg] = useState({file: null, url: ''})
     const endRef = useRef<HTMLDivElement>(null!)
 
     const { chatId, user } = useChatStore()
@@ -20,17 +24,24 @@ export function Chat() {
 
     useEffect(() => {
         endRef.current.scrollIntoView({ behavior: 'smooth' })
+        console.log('scrolling to view:', endRef.current.classList.toString())
     }, [])
+
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, 'chats', chatId), async (res: any) => {
-            setChat(res.data())
-            // console.log('chat:', res.data())
+            
+            setChat(res.data()) 
+            
         })
         return () => unSub()
     }, [chatId])
 
-    console.log('chat:', chat)
+    const handleImg = (e: any) => {
+        if (!e.target.files[0]) return
+        setImg({ file: e.target.files[0], url: URL.createObjectURL(e.target.files[0]) })
+    }
+
 
     const handleEmoji = (e: { emoji: string }) => {
         setText((prevText) => prevText + e.emoji)
@@ -40,16 +51,21 @@ export function Chat() {
     // const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
     const handleSend = async () => {
         if (text === '') return
-        // console.log('text:', text)
-        // console.log('chatId:', chatId)
+
+        let imgUrl: {}|null = null 
+
         try{
-            // console.log('currentUser:', currentUser)
-            // console.log('user:', user)
+
+            if(img.file){
+                imgUrl = await upload(img.file) as string
+            }
+
             await updateDoc(doc(db, 'chats', chatId), {
                 messages: arrayUnion({
                     senderId: currentUser?.id,
                     text,
                     createdAt: new Date(),
+                    ...(imgUrl && { img: imgUrl }),
                 })
             })
 
@@ -77,19 +93,21 @@ export function Chat() {
         }catch(err){
             console.error(err)
         }
+
+        setImg({ file: null, url: '' })
+        setText('')
     }
+
+    // if(chat.messages === undefined) return <h6>loading  </h6>
 
     return (
         <div className="chat flex flex-col flex-[2] border-myBorder border-x h-full">
             <div className="top p-5 flex items-center justify-between border-b border-myBorder">
                 <div className="user flex gap-4 items-center">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <QuickAvatar user={user} />
                     <div className="texts">
-                        <span className="text-lg font-bold tracking-wide">Jane Doe</span>
-                        <p className="text-sm font-thin text-stone-400">Hey, how are you doing?</p>
+                        <span className="text-lg font-bold tracking-wide">{user.username}</span>
+                        {/* <p className="text-sm font-thin text-stone-400">{chat}</p> */}
                     </div>
                 </div>
                 <div className="icons flex gap-5">
@@ -98,22 +116,30 @@ export function Chat() {
                     <img className="w-5 h-5 cursor-pointer" src="./info.png" alt="" />
                 </div>
             </div>
-            <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-scroll">
+            <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-auto">
                 {/* START OF MSGs */}
                 
-                {chat.messages.map((c: any) => {
-                    return <MsgItem msg={c} user={c.senderId === currentUser?.id ? currentUser : user} isMe={c.senderId === currentUser?.id}/>
-                    // return <p>{c.text}</p>
+                {chat.messages &&chat.messages.map((c: Message) => {
+                    // <p>{c.text}</p>
+                    return <MsgItem key={c.createdAt.toString()} msg={c} user={c.senderId === currentUser?.id ? currentUser : user} isMe={c.senderId === currentUser?.id}/>
                 })}
 
-                {/* <pre>{JSON.stringify(chat, null, 2)}</pre> */}
-               {/* {chat.messages.map((chat: any) =>{return<MsgItem />} */}
                 {/* END OF MSG */}
-                <div ref={endRef}></div>
+                {img.url && <div className="message own">
+                    <div className="texts">
+                        <img src={img.url} alt="" />
+                    </div>
+                </div>}
+                <div className="end-div" ref={endRef}></div>
             </div>
             <div className="bottom flex items-center justify-between p-5">
                 <div className="icons flex gap-5">
-                    <img className="w-5 h-5 cursor-pointer" src="./img.png" alt="" />
+
+                    <label htmlFor="file">
+                        <img className="w-5 h-5 cursor-pointer" src="./img.png" alt="" />
+                    </label>
+                    <input type="file" id="file" style={{ display: 'none' }} onChange={handleImg} />
+
                     <img className="w-5 h-5 cursor-pointer" src="./camera.png" alt="" />
                     <img className="w-5 h-5 cursor-pointer" src="./mic.png" alt="" />
                 </div>
