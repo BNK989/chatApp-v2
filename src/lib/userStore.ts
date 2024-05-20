@@ -1,13 +1,7 @@
 import { create } from 'zustand'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from './firebase'
-
-interface User {
-    username: string
-    email: string
-    id: string
-    avatar: string
-}
+import { User } from '@/models/user.model'
 
 type UserStore = {
     currentUser: User | null,
@@ -20,7 +14,7 @@ export const useUserStore = create((set: (arg: Partial<UserStore>) => void) => (
   currentUser: null,
   isLoading: true,
   fetchUserInfo: async (uid: string |null) => {
-    console.log('uid:', uid)
+    // console.log('uid:', uid)
 
     if(!uid){
         console.log('No uid:')
@@ -37,8 +31,8 @@ export const useUserStore = create((set: (arg: Partial<UserStore>) => void) => (
                 return set({currentUser: null, isLoading: false})
             }
         } catch (error) {
-            return set({currentUser: null, isLoading: false})
             console.error(error)
+            return set({currentUser: null, isLoading: false})
         }
   }
 }))

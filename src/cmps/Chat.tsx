@@ -1,21 +1,82 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
+import { useChatStore } from '@/lib/chatStore'
+import { db } from '@/lib/firebase'
 import EmojiPicker from 'emoji-picker-react'
-import React, { useEffect } from 'react'
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
+import React, { useEffect, useRef, useState } from 'react'
+import { MsgItem } from './MsgItem'
+import { useUserStore } from '@/lib/userStore'
 // import { AddUser } from './AddUser'
 
 export function Chat() {
-    const [isEmojiOpen, setIsEmojiOpen] = React.useState(false)
-    const [text, setText] = React.useState('')
-    const endRef = React.useRef<HTMLDivElement>(null!)
+    const [chat, setChat] = useState({createdAt: Date, messages: []})
+    const [isEmojiOpen, setIsEmojiOpen] = useState(false)
+    const [text, setText] = useState('')
+    const endRef = useRef<HTMLDivElement>(null!)
+
+    const { chatId, user } = useChatStore()
+    const { currentUser } = useUserStore()
 
     useEffect(() => {
         endRef.current.scrollIntoView({ behavior: 'smooth' })
     }, [])
 
-    const handleEmoji = (e: {emoji: string}) => {
+    useEffect(() => {
+        const unSub = onSnapshot(doc(db, 'chats', chatId), async (res: any) => {
+            setChat(res.data())
+            // console.log('chat:', res.data())
+        })
+        return () => unSub()
+    }, [chatId])
+
+    console.log('chat:', chat)
+
+    const handleEmoji = (e: { emoji: string }) => {
         setText((prevText) => prevText + e.emoji)
         setIsEmojiOpen(false)
+    }
+
+    // const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSend = async () => {
+        if (text === '') return
+        // console.log('text:', text)
+        // console.log('chatId:', chatId)
+        try{
+            // console.log('currentUser:', currentUser)
+            // console.log('user:', user)
+            await updateDoc(doc(db, 'chats', chatId), {
+                messages: arrayUnion({
+                    senderId: currentUser?.id,
+                    text,
+                    createdAt: new Date(),
+                })
+            })
+
+            const userIds = [currentUser?.id, user.id]
+
+
+            userIds.forEach(async (id) => {
+                
+                const userChatRef = doc(db, 'userChats', id)
+                const userChatsSnapshot = await getDoc(userChatRef)
+                
+            if(userChatsSnapshot.exists()){
+                const userChatsData = userChatsSnapshot.data()
+                const chatIndex = userChatsData.chats.findIndex((chat: any) => chat.chatId === chatId)
+                
+                userChatsData.chats[chatIndex].lastMessage = text
+                userChatsData.chats[chatIndex].isSeen = id === currentUser?.id 
+                userChatsData.chats[chatIndex].updatedAt = Date.now()
+
+                await updateDoc(userChatRef, {
+                    chats: userChatsData.chats
+                })
+            }
+        })
+        }catch(err){
+            console.error(err)
+        }
     }
 
     return (
@@ -39,136 +100,14 @@ export function Chat() {
             </div>
             <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-scroll">
                 {/* START OF MSGs */}
-                <div className="message max-w-[80%] flex gap-5 ">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts  flex flex-col">
-                        <img
-                            className="max-w-[70%] max-h-[70%] object-cover rounded my-1"
-                            src="https://picsum.photos/200/300"
-                            alt=""
-                        />
-                        <p className="p-3 rounded bg-cyan-950 bg-opacity-30">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span className="text-xs mt-1">1 min ago</span>
-                    </div>
-                </div>
+                
+                {chat.messages.map((c: any) => {
+                    return <MsgItem msg={c} user={c.senderId === currentUser?.id ? currentUser : user} isMe={c.senderId === currentUser?.id}/>
+                    // return <p>{c.text}</p>
+                })}
 
-                <div className="message max-w-[80%] flex gap-5 self-end flex-row-reverse">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts p-3 rounded bg-sky-500 bg-opacity-30">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-
-                <div className="message">
-                    <Avatar className="w-14 h-14">
-                        <AvatarImage src="./avatar.png" />
-                        {/* <AvatarFallback>CN</AvatarFallback> */}
-                    </Avatar>
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis expedita
-                            debitis inventore perspiciatis in unde qui?
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
+                {/* <pre>{JSON.stringify(chat, null, 2)}</pre> */}
+               {/* {chat.messages.map((chat: any) =>{return<MsgItem />} */}
                 {/* END OF MSG */}
                 <div ref={endRef}></div>
             </div>
@@ -200,7 +139,9 @@ export function Chat() {
                         autoFocusSearch={true}
                     />
                 </div>
-                <button className="send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ">
+                <button 
+                    onClick={handleSend}
+                    className="send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ">
                     Send
                 </button>
             </div>

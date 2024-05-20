@@ -1,19 +1,26 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+import { User } from '@/models/user.model'
+import { QuickAvatar } from './QuickAvatar'
 
-export function MsgItem(){
+//get an obj with user, text, time and possibly img.
+
+export function MsgItem({msg, user, isMe}: {msg : any, user: User, isMe: boolean}) {
+
+  const createdAt = msg.createdAt.toDate().toLocaleTimeString()
   return (
-    <div className="item flex items-center gap-5 p-3 border-b border-myBorder cursor-pointer">
-    <Avatar className="w-12 h-12">
-      <AvatarImage src="./avatar.png" />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
-    <div className="texts">
-      <span className='font-bold'>Jane Doe1</span>
-      <p className='max-w-52 text-sm font-thin whitespace-nowrap overflow-hidden text-ellipsis'>Hey, how are you doing? sfdsdf sdf sdf dsf dsfsdfsd sdfdf sf sdfs df sdfsdfs</p>
+    <div className={`message  flex gap-5 ${isMe ? 'flex-row-reverse' : ''}`}>
+    <QuickAvatar user={user}/>
+    <div className="texts flex flex-col">
+        {msg.img && <img
+            className="max-w-[70%] max-h-[70%] object-cover rounded my-1"
+            src={msg.img}
+            alt=""
+        />}
+        <p className="p-3 rounded bg-cyan-950 bg-opacity-30">
+            {msg.text}
+        </p>
+        <span className="text-xs mt-1">{createdAt}</span>
     </div>
-  </div>
+</div>
   )
 }
-
-export default MsgItem

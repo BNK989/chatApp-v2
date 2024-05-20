@@ -37,7 +37,6 @@ export function Login() {
         if (!email || !password) return
         setLoading(true)
         try{
-          console.log('trying:')
           await signInWithEmailAndPassword(auth, email, password)
 
           toast({
@@ -46,6 +45,8 @@ export function Login() {
             description: 'Logged in successfully',
             
           })
+          window.location.reload()
+
         }
         catch(err){
             console.error(err)
@@ -63,6 +64,14 @@ export function Login() {
 
     const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        if(avatar.file === null) {
+            toast({
+                className: 'bg-black text-white border-t-0 border-x-0 left-[-100px] border-b-2 border-red-500',
+                title: 'Error',
+                description: 'Please upload an avatar',
+            })
+            return
+        }
         setLoading(true)
         const formData = new FormData(e.currentTarget)
         const formDataObject = Object.fromEntries(formData) as UserRegistration
@@ -80,12 +89,15 @@ export function Login() {
                 email,
                 avatar: imgUrl,
                 id: res.user.uid,
-                Blocked: [],
+                blocked: [],
             })
 
             await setDoc(doc(db, 'userChats', res.user.uid), {
               chats: [],
             })
+
+            await signInWithEmailAndPassword(auth, email, password)
+            window.location.reload()
 
             toast({
                 className: 'bg-black text-white border-none left-[-100px]',
