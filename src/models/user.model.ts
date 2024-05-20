@@ -9,7 +9,8 @@ export interface User {
 
 
 export type ChatItem = {
-    id: string
+    chatId: string
+    isSeen: boolean
     receiverId: string
     updatedAt: number
     user: User

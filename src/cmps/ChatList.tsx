@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { MsgItemPreview } from './MsgItemPreview'
 import { AddUser } from './AddUser'
 import { useUserStore } from '@/lib/userStore'
-import { doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { User, ChatItem } from '@/models/user.model'
 import { useChatStore } from '@/lib/chatStore'
@@ -32,7 +32,7 @@ function ChatList() {
             const sortedChatData: ChatItem[] = chatData.sort((a, b) => b.updatedAt - a.updatedAt)
 
             setChats(sortedChatData)
-            console.log('sortedChatData:', sortedChatData)
+            // console.log('sortedChatData:', sortedChatData)
         })
         return () => unSub()
     }, [currentUser?.id])
@@ -43,9 +43,29 @@ function ChatList() {
         timeoutRef.current = setTimeout(() => setIsScrolling(false), 999)
     }
 
-    const handleSelect = async (chat: any) => {
-        console.log('handleSelect:', chat)
-        changeChat(chat.chatId, chat.user)
+    const handleSelect = async (chat: ChatItem) => {
+        console.log('chat:', chat)
+        const userChats = chats.map( c => {
+            const {user , ...rest} = c
+            return rest
+        })//return a smaller obj w/o the user
+
+        const chatIndex = userChats.findIndex((c) => c.chatId === chat.chatId)
+
+        userChats[chatIndex].isSeen = true
+
+        const userChatsRef = doc(db, 'userChats', currentUser!.id)
+
+        try {
+            await updateDoc(userChatsRef, {
+                chats: userChats
+            })
+            changeChat(chat.chatId, chat.user)
+            
+        } catch (err) {
+            console.error('error while updating userChats:', err)
+        }
+
     }
 
     return (
@@ -71,7 +91,11 @@ function ChatList() {
                 </div>
 
                 {chats.map((chat) => (
-                    <MsgItemPreview key={chat.id} user={chat.user} doThis={()=> handleSelect(chat)}/>
+                    <MsgItemPreview 
+                        key={chat.chatId}
+                        user={chat.user}
+                        isSeen={chat.isSeen}
+                        doThis={()=> handleSelect(chat)}/>
                 ))}
             </div>
             {addMode && <AddUser />}
