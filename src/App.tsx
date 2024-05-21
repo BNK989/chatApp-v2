@@ -30,7 +30,7 @@ function App() {
         )
 
     return (
-        <div className="backdrop-blur-lg w-[80vw] h-[90vh] bg-myBlue rounded-xl backdrop-saturate-150 border border-myWhite flex">
+        <div className="backdrop-blur-lg bg-myBlue rounded-xl backdrop-saturate-150 border border-myWhite flex w-full h-screen md:w-[80vw] md:h-[90dvh]">
             {currentUser ? (
                 <>
                     <List />
@@ -48,3 +48,4 @@ function App() {
 }
 
 export default App
+

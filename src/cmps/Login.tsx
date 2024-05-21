@@ -75,7 +75,10 @@ export function Login() {
         setLoading(true)
         const formData = new FormData(e.currentTarget)
         const formDataObject = Object.fromEntries(formData) as UserRegistration
-        const { username, email, password } = formDataObject
+        let { username, email, password } = formDataObject
+        username = username?.toLowerCase()
+        email = email?.toLowerCase()
+        
 
         if (!username || !email || !password) return
 
