@@ -11,7 +11,6 @@ import {
     setDoc,
     updateDoc,
     where,
-    orderBy,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useUserStore } from '@/lib/userStore'

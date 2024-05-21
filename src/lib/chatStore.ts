@@ -10,11 +10,9 @@ type ChatStore = {
     isReceiverBlocked: boolean
     changeChat: Function
     changeBlock: Function
-    // fetchUserInfo: (uid: string) => Promise<void>,
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
-// export const useChatStore = create((set: (arg: any) => void) => ({
     chatId: null,
     user: null,
     isCurrentUserBlocked: false,

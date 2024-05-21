@@ -7,6 +7,7 @@ import { User, ChatItem } from '@/models/user.model'
 
 import { useUserStore } from '@/lib/userStore'
 import { useChatStore } from '@/lib/chatStore'
+import { useAppStore } from '@/lib/appStore'
 
 export function ChatList() {
     const [addMode, setAddMode] = useState(false)
@@ -16,6 +17,7 @@ export function ChatList() {
 
     const { changeChat } = useChatStore()
     const { currentUser } = useUserStore()
+    const { setCurrentScreenIndex } = useAppStore()
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, 'userChats', currentUser!.id), async (res) => {
@@ -61,6 +63,7 @@ export function ChatList() {
                 chats: userChats,
             })
             changeChat(chat.chatId, chat.user)
+            setCurrentScreenIndex(1)
         } catch (err) {
             console.error('error while updating userChats:', err)
         }
