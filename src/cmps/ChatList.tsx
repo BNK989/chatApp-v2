@@ -1,20 +1,21 @@
 import { useState, useRef, useEffect } from 'react'
 import { MsgItemPreview } from './MsgItemPreview'
 import { AddUser } from './AddUser'
-import { useUserStore } from '@/lib/userStore'
 import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { User, ChatItem } from '@/models/user.model'
+
+import { useUserStore } from '@/lib/userStore'
 import { useChatStore } from '@/lib/chatStore'
 
-function ChatList() {
+export function ChatList() {
     const [addMode, setAddMode] = useState(false)
     const [chats, setChats] = useState<ChatItem[]>([])
     const [isScrolling, setIsScrolling] = useState(false)
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+    const { changeChat, changeBlock } = useChatStore()
     const { currentUser } = useUserStore()
-    const { changeChat } = useChatStore()
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, 'userChats', currentUser!.id), async (res) => {
@@ -101,5 +102,3 @@ function ChatList() {
         </>
     )
 }
-
-export default ChatList

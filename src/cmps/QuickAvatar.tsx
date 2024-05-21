@@ -5,8 +5,8 @@ export function QuickAvatar({user, className} : {user: User, className?: string}
     return (
         <>
             <Avatar className={cn("w-12 h-12", className)}>
-                <AvatarImage src={user?.avatar || './avatar.png'} />
-                <AvatarFallback>{getInitials(user.username)}</AvatarFallback>
+                <AvatarImage src={user?.avatar} />
+                <AvatarFallback>{getInitials(user?.username)}</AvatarFallback>
             </Avatar>
         </>
     )

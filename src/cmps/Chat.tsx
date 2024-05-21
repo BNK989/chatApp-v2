@@ -19,7 +19,7 @@ export function Chat() {
     const [img, setImg] = useState({file: null, url: ''})
     const endRef = useRef<HTMLDivElement>(null!)
 
-    const { chatId, user } = useChatStore()
+    const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore()
     const { currentUser } = useUserStore()
 
     useEffect(() => {
@@ -29,7 +29,7 @@ export function Chat() {
 
 
     useEffect(() => {
-        const unSub = onSnapshot(doc(db, 'chats', chatId), async (res: any) => {
+        const unSub = onSnapshot(doc(db, 'chats', chatId!), async (res: any) => {
             
             setChat(res.data()) 
             
@@ -60,7 +60,7 @@ export function Chat() {
                 imgUrl = await upload(img.file) as string
             }
 
-            await updateDoc(doc(db, 'chats', chatId), {
+            await updateDoc(doc(db, 'chats', chatId!), {
                 messages: arrayUnion({
                     senderId: currentUser?.id,
                     text,
@@ -69,12 +69,12 @@ export function Chat() {
                 })
             })
 
-            const userIds = [currentUser?.id, user.id]
+            const userIds = [currentUser?.id, user!.id]
 
 
             userIds.forEach(async (id) => {
                 
-                const userChatRef = doc(db, 'userChats', id)
+                const userChatRef = doc(db, 'userChats', id!)
                 const userChatsSnapshot = await getDoc(userChatRef)
                 
             if(userChatsSnapshot.exists()){
@@ -104,10 +104,10 @@ export function Chat() {
         <div className="chat flex flex-col flex-[2] border-myBorder border-x h-full">
             <div className="top p-5 flex items-center justify-between border-b border-myBorder">
                 <div className="user flex gap-4 items-center">
-                    <QuickAvatar user={user} />
+                    <QuickAvatar user={user!} />
                     <div className="texts">
-                        <span className="text-lg font-bold tracking-wide">{user.username}</span>
-                        {/* <p className="text-sm font-thin text-stone-400">{chat}</p> */}
+                        <span className="text-lg font-bold tracking-wide">{user?.username}</span>
+                        {chat.messages && <p className="text-sm font-thin text-stone-400">{chat.messages[chat.messages.length - 1].text}</p>}
                     </div>
                 </div>
                 <div className="icons flex gap-5">
@@ -121,7 +121,7 @@ export function Chat() {
                 
                 {chat.messages &&chat.messages.map((c: Message) => {
                     // <p>{c.text}</p>
-                    return <MsgItem key={c.createdAt.toString()} msg={c} user={c.senderId === currentUser?.id ? currentUser : user} isMe={c.senderId === currentUser?.id}/>
+                    return <MsgItem key={c.createdAt.toString()} msg={c} user={c.senderId === currentUser?.id ? currentUser : user!} isMe={c.senderId === currentUser?.id}/>
                 })}
 
                 {/* END OF MSG */}
@@ -144,11 +144,12 @@ export function Chat() {
                     <img className="w-5 h-5 cursor-pointer" src="./mic.png" alt="" />
                 </div>
                 <Input
+                    disabled={isCurrentUserBlocked || isReceiverBlocked}
                     type="text"
-                    placeholder="Type a message..."
+                    placeholder={ isCurrentUserBlocked || isReceiverBlocked ? 'You are blocked' : `Type a message...`}
                     onChange={(e) => setText(e.target.value)}
                     value={text}
-                    className="flex-1 mx-3 bg-myBlue border-none outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-[0]"
+                    className={`flex-1 mx-3 bg-myBlue border-none outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-[0] ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}
                 />
                 <div className="emoji relative">
                     <img
@@ -166,8 +167,9 @@ export function Chat() {
                     />
                 </div>
                 <button 
+                    disabled={isCurrentUserBlocked || isReceiverBlocked}
                     onClick={handleSend}
-                    className="send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ">
+                    className={`send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}>
                     Send
                 </button>
             </div>

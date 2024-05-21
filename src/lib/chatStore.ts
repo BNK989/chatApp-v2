@@ -1,20 +1,20 @@
 import { create } from 'zustand'
 import { User } from '@/models/user.model'
 import { useUserStore } from './userStore'
-// import { doc, getDoc } from 'firebase/firestore'
-// import { db } from './firebase'
-// import { AnyCnameRecord } from 'dns'
+
 
 type ChatStore = {
     chatId: string | null
     user: User | null
     isCurrentUserBlocked: boolean
     isReceiverBlocked: boolean
+    changeChat: Function
+    changeBlock: Function
     // fetchUserInfo: (uid: string) => Promise<void>,
 }
 
-// export const useChatStore = create((set: (arg: Partial<ChatStore>) => void) => ({
-export const useChatStore = create((set: (arg: any) => void) => ({
+export const useChatStore = create<ChatStore>((set) => ({
+// export const useChatStore = create((set: (arg: any) => void) => ({
     chatId: null,
     user: null,
     isCurrentUserBlocked: false,
@@ -26,7 +26,7 @@ export const useChatStore = create((set: (arg: any) => void) => ({
         if (user && user.blocked!.includes(currentUser!.id)) {
             return set({
                 chatId,
-                user: null,
+                user,
                 isCurrentUserBlocked: true,
                 isReceiverBlocked: false,
             })
@@ -35,7 +35,7 @@ export const useChatStore = create((set: (arg: any) => void) => ({
         else if (currentUser && currentUser.blocked!.includes(user!.id)) {
             return set({
                 chatId,
-                user: null,
+                user,
                 isCurrentUserBlocked: false,
                 isReceiverBlocked: true,
             })
@@ -49,7 +49,7 @@ export const useChatStore = create((set: (arg: any) => void) => ({
             })
         }
     },
-    changeBlock: () => {
-        set((state: any) => ({ ...state, isReceiverBlocked: !state.isReceiverBlocked }))
+    changeBlock: () =>  {
+        set((prevState) => ({ ...prevState, isReceiverBlocked: !prevState.isReceiverBlocked }))
     },
 }))

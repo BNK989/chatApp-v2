@@ -7,5 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export function getInitials(name: string): string {
+  if (!name) return "NA"
   return name.split(" ").reduce((acc, curr) => acc + curr[0], "").toUpperCase()
 }
