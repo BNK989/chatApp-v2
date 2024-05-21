@@ -9,7 +9,7 @@ export function MsgItem({msg, user, isMe}: {msg : any, user: User, isMe: boolean
   const createdAt = msg.createdAt.toDate().toLocaleTimeString()
   return (
     <div className={`message  flex gap-5 ${isMe ? 'flex-row-reverse' : ''}`}>
-    <QuickAvatar user={user}/>
+    <QuickAvatar user={user} className='w-8 h-8'/>
     <div className="texts flex flex-col">
         {msg.img && <img
             className={`max-w-[70%] max-h-[70%] object-cover rounded my-1 ${isMe ? 'self-end' : 'self-start'}`}

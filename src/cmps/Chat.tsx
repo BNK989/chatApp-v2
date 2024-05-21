@@ -1,10 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import { useChatStore } from '@/lib/chatStore'
 import { db } from '@/lib/firebase'
 import EmojiPicker from 'emoji-picker-react'
 import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MsgItem } from './MsgItem'
 import { useUserStore } from '@/lib/userStore'
 import { QuickAvatar } from './QuickAvatar'
@@ -17,15 +16,16 @@ export function Chat() {
     const [isEmojiOpen, setIsEmojiOpen] = useState(false)
     const [text, setText] = useState('')
     const [img, setImg] = useState({file: null, url: ''})
-    const endRef = useRef<HTMLDivElement>(null!)
+    const endRef = useRef<HTMLDivElement>(null)
 
     const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore()
     const { currentUser } = useUserStore()
 
     useEffect(() => {
+        if (!endRef.current) return
         endRef.current.scrollIntoView({ behavior: 'smooth' })
         console.log('scrolling to view:', endRef.current.classList.toString())
-    }, [])
+    }, [endRef.current])
 
 
     useEffect(() => {
@@ -107,7 +107,7 @@ export function Chat() {
                     <QuickAvatar user={user!} />
                     <div className="texts">
                         <span className="text-lg font-bold tracking-wide">{user?.username}</span>
-                        {chat.messages && <p className="text-sm font-thin text-stone-400">{chat.messages[chat.messages.length - 1].text}</p>}
+                        {/* {chat.messages && <p className="text-sm font-thin text-stone-400">{chat.messages[chat.messages.length - 1].text}</p>} */}
                     </div>
                 </div>
                 <div className="icons flex gap-5">
@@ -120,8 +120,11 @@ export function Chat() {
                 {/* START OF MSGs */}
                 
                 {chat.messages &&chat.messages.map((c: Message) => {
-                    // <p>{c.text}</p>
-                    return <MsgItem key={c.createdAt.toString()} msg={c} user={c.senderId === currentUser?.id ? currentUser : user!} isMe={c.senderId === currentUser?.id}/>
+                    return <MsgItem 
+                            key={c.createdAt.toString()}
+                            msg={c} user={c.senderId === currentUser?.id ? currentUser : user!}
+                            isMe={c.senderId === currentUser?.id}
+                            />
                 })}
 
                 {/* END OF MSG */}

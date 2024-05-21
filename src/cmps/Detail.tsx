@@ -25,7 +25,7 @@ export function Detail() {
     return (
         <div className="detail flex-1 m-2 relative">
             <div className="user py-5 px-5 flex flex-col items-center gap-5 border-b border-myBorder ">
-                <QuickAvatar user={user!} />
+                <QuickAvatar user={user!} className='w-16 h-16' />
                 <h2>{user?.username}</h2>
                 <p>Online</p>
             </div>

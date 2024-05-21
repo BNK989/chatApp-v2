@@ -2,17 +2,11 @@ import { useUserStore } from '@/lib/userStore'
 import { QuickAvatar } from './QuickAvatar'
 import { User } from '@/models/user.model'
 
-
-
 export function MsgItemPreview({user, isSeen, doThis}: {user : User, isSeen: boolean, doThis: () => void}) {
   
   const { currentUser } = useUserStore()
   const isBlocked = user.blocked!.includes(currentUser!.id)
-  console.log('isBlocked:', isBlocked)
-  if(isBlocked) {
-    delete user.avatar
-    console.log('user:', user)
-  }
+  if(isBlocked) delete user.avatar
   
   return (
     <div onClick={doThis} 

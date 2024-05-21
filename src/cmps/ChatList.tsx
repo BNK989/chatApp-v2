@@ -14,7 +14,7 @@ export function ChatList() {
     const [isScrolling, setIsScrolling] = useState(false)
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const { changeChat, changeBlock } = useChatStore()
+    const { changeChat } = useChatStore()
     const { currentUser } = useUserStore()
 
     useEffect(() => {
@@ -45,10 +45,10 @@ export function ChatList() {
     }
 
     const handleSelect = async (chat: ChatItem) => {
-        const userChats = chats.map( c => {
-            const {user , ...rest} = c
+        const userChats = chats.map((c) => {
+            const { user, ...rest } = c
             return rest
-        })//return a smaller obj w/o the user
+        }) //return a smaller obj w/o the user
 
         const chatIndex = userChats.findIndex((c) => c.chatId === chat.chatId)
 
@@ -58,14 +58,12 @@ export function ChatList() {
 
         try {
             await updateDoc(userChatsRef, {
-                chats: userChats
+                chats: userChats,
             })
             changeChat(chat.chatId, chat.user)
-            
         } catch (err) {
             console.error('error while updating userChats:', err)
         }
-
     }
 
     return (
@@ -82,23 +80,39 @@ export function ChatList() {
                             placeholder="Search"
                         />
                     </div>
-                    <img
+                    <Plus isOpen={addMode} setIsOpen={setAddMode}/>
+                    {/* <img
                         className="w-5 h-5 p-3 mx-2 rounded-md cursor-pointer bg-myBlue"
                         onClick={() => setAddMode(!addMode)}
                         src={addMode ? './minus.png' : './plus.png'}
                         alt="plus"
-                    />
+                    /> */}
                 </div>
 
                 {chats.map((chat) => (
-                    <MsgItemPreview 
+                    <MsgItemPreview
                         key={chat.chatId}
                         user={chat.user}
                         isSeen={chat.isSeen}
-                        doThis={()=> handleSelect(chat)}/>
+                        doThis={() => handleSelect(chat)}
+                    />
                 ))}
             </div>
-            {addMode && <AddUser />}
+            {addMode && <AddUser closeSelf={() => setAddMode(false)} />}
         </>
+    )
+}
+
+
+interface PlusProps {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+  }
+function Plus({isOpen, setIsOpen} : PlusProps) {
+    return (
+        <div onClick={() => setIsOpen(!isOpen)} className="relative w-5 h-5 p-3 mx-2 rounded-md cursor-pointer bg-myBlue flex items-center justify-center">
+            <span className="absolute w-6 h-[2px] rounded bg-white"></span>
+            <span className={`absolute w-6 h-[2px] rounded bg-white transition ${isOpen ? 'open' : 'transform rotate-90'}`}></span>
+        </div>
     )
 }

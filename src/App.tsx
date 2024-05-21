@@ -36,6 +36,9 @@ function App() {
                     <List />
                     {chatId && <Chat></Chat>}
                     {chatId && <Detail></Detail>}
+                    {!chatId && <div className='flex-[3] h-full border-myBorder border-x flex justify-center items-center'>
+                                    <h4 className='text-white text-opacity-65'>Select a chat to start chatting</h4>
+                                </div>}
                 </>
             ) : (
                 <Login></Login>

@@ -3,10 +3,9 @@ import { User } from '../models/user.model'
 import { QuickAvatar } from './QuickAvatar'
 import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { channel } from 'diagnostics_channel'
 import { useUserStore } from '@/lib/userStore'
 
-export function AddUser() {
+export function AddUser({closeSelf}:{closeSelf: () => void}) {
     const [user, setUser] = useState<User|null>(null)
     const { currentUser } = useUserStore()
 
@@ -68,6 +67,11 @@ export function AddUser() {
     }
     return (
         <div className="absolute w-max h-max p-7 bg-myBlue rounded inset-0 m-auto">
+            <button 
+                onClick={closeSelf}
+                className="close absolute -top-3 -right-2 rounded bg-myBlue px-2">
+                    X
+            </button>
             <form onSubmit={handleSearch} className="flex gap-5" action="">
                 <input
                     className="p-5 rounded border-none outline-none bg-slate-50 placeholder:text-black text-black"
