@@ -24,14 +24,15 @@ export function Chat() {
     useEffect(() => {
         if (!endRef.current) return
         endRef.current.scrollIntoView({ behavior: 'smooth' })
-        console.log('scrolling to view:', endRef.current.classList.toString())
-    }, [endRef.current])
-
-
+    }, [chat.length])
+    // }, [endRef.current])
+    
+    
     useEffect(() => {
         const unSub = onSnapshot(doc(db, 'chats', chatId!), async (res: any) => {
             
             setChat(res.data()) 
+            // if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' })
             
         })
         return () => unSub()
@@ -126,6 +127,7 @@ export function Chat() {
                             isMe={c.senderId === currentUser?.id}
                             />
                 })}
+                {/* TODO: last 10 msgs  or all unread msgs*/}
 
                 {/* END OF MSG */}
                 {img.url && <div className="message own">
@@ -133,7 +135,7 @@ export function Chat() {
                         <img src={img.url} alt="" />
                     </div>
                 </div>}
-                <div className="end-div" ref={endRef}></div>
+                <div className="end-div" ref={endRef}>...</div>
             </div>
             <div className="bottom flex items-center justify-between p-5">
                 <div className="icons flex gap-5">

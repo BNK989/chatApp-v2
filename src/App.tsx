@@ -47,7 +47,7 @@ function App() {
             {currentUser ? (
                 <>
                     
-                    {!isMobile || (isMobile && currentScreenIndex === 0) && <List />}
+                    {(!isMobile || (isMobile && currentScreenIndex === 0)) && <List />}
 
 
                     {((chatId && !isMobile) || (chatId && isMobile && currentScreenIndex === 1)) && <Chat></Chat>}
