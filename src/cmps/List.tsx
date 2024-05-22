@@ -4,7 +4,7 @@ import {ChatList} from './ChatList'
 
 export function List(){
   return (
-    <div className='list flex flex-1 flex-col'>
+    <div className='list flex flex-1 flex-col w-dvw md:w-[inherit]'>
         <UserInfo></UserInfo>
         <ChatList></ChatList>
     </div>

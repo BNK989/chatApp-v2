@@ -13,7 +13,7 @@ export function MsgItemPreview({user, isSeen, doThis}: {user : User, isSeen: boo
       className={`item flex items-center gap-5 p-3 border-b border-myBorder cursor-pointer ${isSeen ? '' : 'bg-blue-500 font-extrabold'}`}>
     <QuickAvatar user={user!}/>
     <div className="texts">
-      <span className='font-bold'>
+      <span className='font-bold capitalize'>
         { isBlocked
         ? 'User' 
         : user?.username}

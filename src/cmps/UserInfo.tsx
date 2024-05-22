@@ -21,7 +21,7 @@ export function UserInfo() {
     <div className="userInfo p-5 flex items-center justify-between">
       <div className="user flex items-center gap-5">
         <QuickAvatar user={currentUser!}/>
-        <h2>{currentUser!.username}</h2>
+        <h2 className="capitalize">{currentUser!.username}</h2>
       </div>
       <div className="icons flex gap-5">
         <DropdownMenu>

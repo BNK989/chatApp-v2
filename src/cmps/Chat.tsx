@@ -117,7 +117,7 @@ export function Chat() {
                     </button>
                     <QuickAvatar user={user!} />
                     <div className="texts">
-                        <span className="text-lg font-bold tracking-wide">{user?.username}</span>
+                        <span className="text-lg font-bold tracking-wide capitalize">{user?.username}</span>
                         {/* {chat.messages && <p className="text-sm font-thin text-stone-400">{chat.messages[chat.messages.length - 1].text}</p>} */}
                     </div>
                 </div>

@@ -43,7 +43,7 @@ function App() {
         )
 
     return (
-        <div className="backdrop-blur-lg bg-myBlue rounded-xl backdrop-saturate-150 border border-myWhite flex w-full h-screen md:w-[80vw] md:h-[90dvh]">
+        <div className="backdrop-blur-lg bg-myBlue md:rounded-xl backdrop-saturate-150 border border-myWhite flex w-dvw h-dvh md:w-[80vw] md:h-[90dvh]">
             {currentUser ? (
                 <>
                     

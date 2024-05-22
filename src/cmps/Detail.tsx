@@ -32,10 +32,10 @@ export function Detail() {
                     onClick={() => {
                         setCurrentScreenIndex(1)
                     }}>
-                    <img className="w-5 rotate-90" src="./arrowDown.png" alt="back" />
+                    <img className="w-5 rotate-90 block md:hidden" src="./arrowDown.png" alt="back" />
                 </button>
                 <QuickAvatar user={user!} className="w-16 h-16" />
-                <h2>{user?.username}</h2>
+                <h2 className='capitalize'>{user?.username}</h2>
                 <p>Online</p>
             </div>
             <div className="info p-5 flex flex-col gap-7 overflow-y-hidden">

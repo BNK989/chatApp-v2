@@ -94,7 +94,7 @@ export function Login() {
                 title: 'Success',
                 description: 'Logged in successfully',
             })
-            // window.location.reload()
+            window.location.reload()
         } catch (err) {
             console.error(err)
             toast({
