@@ -21,18 +21,22 @@ export function Chat() {
     const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore()
     const { currentUser } = useUserStore()
 
-    useEffect(() => {
-        if (!endRef.current) return
-        endRef.current.scrollIntoView({ behavior: 'smooth' })
-    }, [chat.length])
+    // useEffect(() => {
+    //     if (!endRef.current) return
+    //     endRef.current.scrollIntoView({ behavior: 'smooth' })
+    // }, [chat.length])
+
     // }, [endRef.current])
     
     
     useEffect(() => {
         const unSub = onSnapshot(doc(db, 'chats', chatId!), async (res: any) => {
             
-            setChat(res.data()) 
-            // if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' })
+            await setChat(res.data()) 
+            if (endRef.current){
+                setTimeout(() => endRef.current!.scrollIntoView({ behavior: 'smooth' }), 1)
+
+            } 
             
         })
         return () => unSub()
@@ -120,14 +124,14 @@ export function Chat() {
             <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-auto">
                 {/* START OF MSGs */}
                 
-                {chat.messages &&chat.messages.map((c: Message) => {
+                {chat.messages && chat.messages.map((c: Message) => {
                     return <MsgItem 
                             key={c.createdAt.toString()}
                             msg={c} user={c.senderId === currentUser?.id ? currentUser : user!}
                             isMe={c.senderId === currentUser?.id}
                             />
                 })}
-                {/* TODO: last 10 msgs  or all unread msgs*/}
+                {/* TODO: first load last 10 msgs or all unread msgs*/}
 
                 {/* END OF MSG */}
                 {img.url && <div className="message own">
