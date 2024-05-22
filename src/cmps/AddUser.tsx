@@ -5,6 +5,7 @@ import {
     arrayUnion,
     collection,
     doc,
+    getDoc,
     getDocs,
     query,
     serverTimestamp,
@@ -17,17 +18,27 @@ import { useUserStore } from '@/lib/userStore'
 
 export function AddUser({ closeSelf }: { closeSelf: () => void }) {
     const [users, setUsers] = useState<User[]>([])
+    const [chatsIds, setChatsIds] = useState<string[]>([])
     const { currentUser } = useUserStore()
+    //TODO get active chat list
+
+    const getActiveChats = async () => {
+        const activeChats = await getDoc(doc(db, 'userChats', currentUser!.id))
+        const { chats } = activeChats.data()!
+        const chatsIds = chats.map((c: any) => c.receiverId)
+        setChatsIds(chatsIds)
+    }
 
     const handleSearch = async (e: any) => {
         e.preventDefault()
+        getActiveChats()
         const formData = new FormData(e.currentTarget)
         const username = formData.get('username') as string
 
         try {
             const userRef = collection(db, 'users')
 
-            const q = query(userRef, where('username', '==', username.toLowerCase()))
+            const q = query(userRef, where('username', '>=' , username.toLowerCase()))
             const querySnapshot = await getDocs(q)
             console.log('querySnapshot:', querySnapshot.docs.map((d) => d.data()) as User[])
             if (!querySnapshot.empty) {
@@ -100,8 +111,8 @@ export function AddUser({ closeSelf }: { closeSelf: () => void }) {
                                             <QuickAvatar key={user.id} user={user} />
                                             <span className="capitalize">{user.username}</span>
                                         </div>
-                                        <button onClick={() => handleAdd(user)} className="p-3 bg-blue-600 text-white rounded">
-                                            Add User
+                                        <button disabled={chatsIds.includes(user.id)} onClick={() => handleAdd(user)} className={`w-20 p-3 ${chatsIds.includes(user.id) ? 'bg-blue-300' : 'bg-blue-600'} text-white rounded`}>
+                                            {chatsIds.includes(user.id) ? 'Added' : 'Add User'}
                                         </button>
                                     </div>
                                 )
