@@ -51,7 +51,7 @@ function App() {
 
 
                     {((chatId && !isMobile) || (chatId && isMobile && currentScreenIndex === 1)) && <Chat></Chat>}
-                    {(chatId && !isMobile) && <Detail></Detail>}
+                    {((chatId && !isMobile) || (chatId && isMobile && currentScreenIndex === 2)) && <Detail></Detail>}
 
                     {(!chatId && !isMobile) && <div className='flex-[3] h-full border-myBorder border-x flex justify-center items-center'>
                                     <h4 className='text-white text-opacity-65'>Select a chat to start chatting</h4>

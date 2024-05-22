@@ -1,14 +1,16 @@
 import { Input } from '@/components/ui/input'
-import { useChatStore } from '@/lib/chatStore'
 import { db } from '@/lib/firebase'
 import EmojiPicker from 'emoji-picker-react'
 import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { useEffect, useRef, useState } from 'react'
 import { MsgItem } from './MsgItem'
-import { useUserStore } from '@/lib/userStore'
 import { QuickAvatar } from './QuickAvatar'
 import { ChatText, Message } from '@/models/chat.model'
 import { upload } from '@/lib/upload'
+
+import { useChatStore } from '@/lib/chatStore'
+import { useUserStore } from '@/lib/userStore'
+import { useAppStore } from '@/lib/appStore'
 // import { AddUser } from './AddUser'
 
 export function Chat() {
@@ -20,6 +22,7 @@ export function Chat() {
 
     const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore()
     const { currentUser } = useUserStore()
+    const { setCurrentScreenIndex } = useAppStore()
 
     // useEffect(() => {
     //     if (!endRef.current) return
@@ -109,6 +112,9 @@ export function Chat() {
         <div className="chat flex flex-col flex-[2] border-myBorder border-x h-full">
             <div className="top p-5 flex items-center justify-between border-b border-myBorder">
                 <div className="user flex gap-4 items-center">
+                    <button onClick={()=>{setCurrentScreenIndex(0)}}>
+                        <img className='w-5 rotate-90' src="./arrowDown.png" alt="back" />
+                    </button>
                     <QuickAvatar user={user!} />
                     <div className="texts">
                         <span className="text-lg font-bold tracking-wide">{user?.username}</span>
@@ -116,9 +122,11 @@ export function Chat() {
                     </div>
                 </div>
                 <div className="icons flex gap-5">
-                    <img className="w-5 h-5 cursor-pointer" src="./phone.png" alt="" />
-                    <img className="w-5 h-5 cursor-pointer" src="./video.png" alt="" />
-                    <img className="w-5 h-5 cursor-pointer" src="./info.png" alt="" />
+                    {/* <img className="w-5 h-5 cursor-pointer" src="./phone.png" alt="" />
+                    <img className="w-5 h-5 cursor-pointer" src="./video.png" alt="" /> */}
+                    <button onClick={()=>{setCurrentScreenIndex(2)}}>
+                        <img className="w-5 h-5 cursor-pointer" src="./info.png" alt="" />
+                    </button>
                 </div>
             </div>
             <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-auto">
@@ -149,8 +157,8 @@ export function Chat() {
                     </label>
                     <input type="file" id="file" style={{ display: 'none' }} onChange={handleImg} />
 
-                    <img className="w-5 h-5 cursor-pointer" src="./camera.png" alt="" />
-                    <img className="w-5 h-5 cursor-pointer" src="./mic.png" alt="" />
+                    {/* <img className="w-5 h-5 cursor-pointer" src="./camera.png" alt="" />
+                    <img className="w-5 h-5 cursor-pointer" src="./mic.png" alt="" /> */}
                 </div>
                 <Input
                     disabled={isCurrentUserBlocked || isReceiverBlocked}

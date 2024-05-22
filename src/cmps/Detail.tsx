@@ -1,15 +1,18 @@
 import { MenuOption } from './MenuOption'
 import { auth, db } from '@/lib/firebase'
-import { useChatStore } from '@/lib/chatStore'
-import { useUserStore } from '@/lib/userStore'
 import { QuickAvatar } from './QuickAvatar'
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
+
+import { useChatStore } from '@/lib/chatStore'
+import { useUserStore } from '@/lib/userStore'
+import { useAppStore } from '@/lib/appStore'
 export function Detail() {
     const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore()
     const { currentUser } = useUserStore()
+    const { setCurrentScreenIndex } = useAppStore()
 
     const handleBlock = async (): Promise<void> => {
-      if (!user) return
+        if (!user) return
 
         const userDocRef = doc(db, 'users', currentUser!.id)
         try {
@@ -23,9 +26,15 @@ export function Detail() {
     }
 
     return (
-        <div className="detail flex-1 m-2 relative">
+        <div className="detail md:flex-1 md:m-2 relative w-[100dvw] md:w-fit">
             <div className="user py-5 px-5 flex flex-col items-center gap-5 border-b border-myBorder ">
-                <QuickAvatar user={user!} className='w-16 h-16' />
+                <button
+                    onClick={() => {
+                        setCurrentScreenIndex(1)
+                    }}>
+                    <img className="w-5 rotate-90" src="./arrowDown.png" alt="back" />
+                </button>
+                <QuickAvatar user={user!} className="w-16 h-16" />
                 <h2>{user?.username}</h2>
                 <p>Online</p>
             </div>
@@ -76,7 +85,7 @@ export function Detail() {
                     <button
                         onClick={handleBlock}
                         className="py-3 px-5 bg-red-700 bg-opacity-50 text-white rounded-s hover:bg-opacity-75 transition-colors">
-                        { isCurrentUserBlocked ? 'You are Blocked' : isReceiverBlocked ? 'Unblock' : 'Block' }
+                        {isCurrentUserBlocked ? 'You are Blocked' : isReceiverBlocked ? 'Unblock' : 'Block'}
                     </button>
                     <button
                         onClick={() => {

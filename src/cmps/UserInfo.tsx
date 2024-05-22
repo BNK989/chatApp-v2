@@ -1,5 +1,16 @@
 import { useUserStore } from "@/lib/userStore"
 import { QuickAvatar } from "./QuickAvatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { auth } from "@/lib/firebase"
+
 
 
 export function UserInfo() {
@@ -13,12 +24,25 @@ export function UserInfo() {
         <h2>{currentUser!.username}</h2>
       </div>
       <div className="icons flex gap-5">
-        <img className="w-5 cursor-pointer" src="./more.png" alt="more" />
-        <img className="w-5 cursor-pointer" src="./video.png" alt="video" />
-        <img className="w-5 cursor-pointer" src="./edit.png" alt="edit" />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+          <img className="w-5 cursor-pointer" src="./more.png" alt="more" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuItem>
+            <Button onClick={() => auth.signOut()}>Log out</Button>
+            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+          </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        {/* <img className="w-5 cursor-pointer" src="./video.png" alt="video" />
+        <img className="w-5 cursor-pointer" src="./edit.png" alt="edit" /> */}
       </div>
     </div>
   )
 }
 
 export default UserInfo
+
+

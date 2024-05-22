@@ -21,6 +21,7 @@ export function Login() {
         url: '',
     })
     const [loading, setLoading] = useState(false)
+    const [isRegister, setIsRegister] = useState(false)
 
     const handleAvatar = (e: any) => {
         if (!e.target.files[0]) return
@@ -43,6 +44,7 @@ export function Login() {
             className: 'bg-black text-white border-none left-[-100px] border-b-2 border-green-500',
             title: 'Success',
             description: 'Logged in successfully',
+            // duration: 200000
             
           })
           window.location.reload()
@@ -116,8 +118,8 @@ export function Login() {
     }
 
     return (
-        <div className="login w-full h-full items-center flex ">
-            <div className="item flex flex-1 flex-col gap-5 items-center">
+        <div className="login w-screen md:w-full h-full items-center flex ">
+            <div className={`item flex flex-1 flex-col gap-5 items-center ${isRegister ? 'flex' : 'hidden'} md:flex`}>
                 <h2>Welcome back,</h2>
                 <form onSubmit={handleLogin} className="flex flex-col items-center justify-center gap-5">
                     <input
@@ -134,10 +136,16 @@ export function Login() {
                     />
                     <button disabled={loading} className="w-full py-3 rounded-md bg-blue-600 font-medium cursor-pointer disabled:opacity-75">Sign in</button>
                 </form>
+                <div className="block md:hidden">
+                    <h5>Don't have an account?</h5>
+                    <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign up</button>
+                </div>
             </div>
-            <div className="separator h-4/5 w-[2px] bg-myBorder"></div>
-            <div className="item flex flex-1 flex-col gap-5 items-center">
-                {/*: REGISTER */}
+            <div className="separator h-4/5 w-[2px] bg-myBorder hidden md:block"></div>
+
+
+            {/*: REGISTER */}
+            <div className={`item flex-1 flex-col gap-5 items-center ${!isRegister ? 'flex' : 'hidden'} md:flex`}>
                 <h2>Create an account</h2>
                 <form onSubmit={handleRegister} className="flex flex-col items-center justify-center gap-5">
                     <label htmlFor="file" className="w-full flex items-center gap-5 cursor-pointer underline">
@@ -180,9 +188,11 @@ export function Login() {
                       {loading ? 'Loading' : 'Sign up'}
                     </button>
                 </form>
+                <div className="block md:hidden">
+                    <h5>Already have an account?</h5>
+                    <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign in</button>
+                </div>
             </div>
         </div>
     )
 }
-
-export default Login
