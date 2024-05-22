@@ -1,9 +1,8 @@
 import { FormEvent, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import { auth, db } from '@/lib/firebase'
-// import { BlockList } from 'net'
+import { auth, db, gProvider } from '@/lib/firebase'
 import { upload } from '@/lib/upload'
 import { RotatingLines } from 'react-loader-spinner'
 
@@ -61,6 +60,48 @@ export function Login() {
         }
         finally{
           setLoading(false)
+        }
+    }
+
+    const handleGoogleSignIn = async () => {
+        try {
+            await signInWithPopup(auth, gProvider)
+                .then( async (result) => {
+                    const {uid, displayName, email, photoURL: avatar} = result.user
+                    const username = displayName?.toLocaleLowerCase()
+                    const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
+
+                 if(isNew) {
+                     await setDoc(doc(db, 'users', uid), {
+                         username,
+                         email,
+                         avatar,
+                         id: uid,
+                         blocked: [],
+                     })
+         
+                     await setDoc(doc(db, 'userChats', uid), {
+                       chats: [],
+                     })   
+                }
+
+
+            }).catch((error) => {
+                console.error('from promise error:',error)
+            })
+            toast({
+                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-green-500',
+                title: 'Success',
+                description: 'Logged in successfully',
+            })
+            // window.location.reload()
+        } catch (err) {
+            console.error(err)
+            toast({
+                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-red-500',
+                title: 'Error while logging in',
+                description: 'Please try again',
+            })
         }
     }
 
@@ -140,6 +181,9 @@ export function Login() {
                     <h5>Don't have an account?</h5>
                     <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign up</button>
                 </div>
+                <div className="signInWithGoogle">
+                    <button onClick={handleGoogleSignIn}>Sign in with Google</button>
+                </div>
             </div>
             <div className="separator h-4/5 w-[2px] bg-myBorder hidden md:block"></div>
 
@@ -191,6 +235,9 @@ export function Login() {
                 <div className="block md:hidden">
                     <h5>Already have an account?</h5>
                     <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign in</button>
+                </div>
+                <div className="signInWithGoogle">
+                    <button onClick={handleGoogleSignIn}>Sign up with Google</button>
                 </div>
             </div>
         </div>

@@ -1,7 +1,10 @@
-* [ ] add back btn on mobile
-* [ ] make the app mobile friendly
+* [x] add back btn on mobile
+* [x] make the app mobile friendly
 
 * [ ] fix scroll: on chat selection + on msg send
+* [ ] fix toast on mobile
+* [ ] fix username to always be capitalized
+* [ ] fix rounded edges AND scroll on mobile
 
 * [ ] Make avatar images not show up when user is blocked
 * [ ] Improve user search use regex
