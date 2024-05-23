@@ -100,7 +100,7 @@ html {
 }
 
 body {
-    background-image: url('public/bg1.jpg'), url('https://picsum.photos/id/1015/1920/1080');
+    background-image: url('/bg1.jpg'), url('https://picsum.photos/id/1015/1920/1080');
     background-size: cover, cover;
     background-repeat: no-repeat, no-repeat;
     background-position: center, center;
