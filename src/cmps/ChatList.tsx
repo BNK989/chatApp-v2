@@ -128,7 +128,7 @@ interface PlusProps {
   }
 function Plus({isOpen, setIsOpen} : PlusProps) {
     return (
-        <div onClick={() => setIsOpen(!isOpen)} className="relative w-5 h-5 p-3 mx-2 rounded-md cursor-pointer bg-myBlue flex items-center justify-center">
+        <div onClick={() => setIsOpen(!isOpen)} className="relative min-w-5 h-5 p-3 mx-2 rounded-md cursor-pointer bg-myBlue flex items-center justify-center">
             <span className="absolute w-6 h-[2px] rounded bg-white"></span>
             <span className={`absolute w-6 h-[2px] rounded bg-white transition ${isOpen ? 'open' : 'transform rotate-90'}`}></span>
         </div>
