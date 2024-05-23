@@ -13,6 +13,7 @@ export function ChatList() {
     const [addMode, setAddMode] = useState(false)
     const [chats, setChats] = useState<ChatItem[]>([])
     const [isScrolling, setIsScrolling] = useState(false)
+    const [activeChatId, setActiveChatId] = useState('')
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const { changeChat } = useChatStore()
@@ -51,6 +52,8 @@ export function ChatList() {
             const { user, ...rest } = c
             return rest
         }) //return a smaller obj w/o the user
+
+        setActiveChatId(chat.chatId)
 
         const chatIndex = userChats.findIndex((c) => c.chatId === chat.chatId)
 
@@ -95,8 +98,8 @@ export function ChatList() {
                 {chats.map((chat) => (
                     <MsgItemPreview
                         key={chat.chatId}
-                        user={chat.user}
-                        isSeen={chat.isSeen}
+                        isActive={activeChatId === chat.chatId}
+                        chat={chat}
                         doThis={() => handleSelect(chat)}
                     />
                 ))}

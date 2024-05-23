@@ -2,16 +2,19 @@
 * [x] make the app mobile friendly
 * [x] fix rounded edges AND scroll on mobile
 * [x] fix username to always be capitalized
+* [x] indicate selected chat in chat preview
 
 * [ ] fix: prevent users from being added more than once
 
 * [ ] fix scroll: on chat selection + on msg send
 * [ ] fix toast on mobile
+* [ ] add show new message count in chat preview
 
 * [ ] Make avatar images not show up when user is blocked
-* [ ] Improve user search use regex
+* [ ] Improve user search
 * [ ] Improve search in ChatList cmp
 
 * [ ] make i button at the top show/hide the details cmps
 * [ ] add camera support
 * [ ] add side media gallery
+* [ ] add Shift+Enter for new line
