@@ -57,7 +57,8 @@ export function Chat() {
     }
 
     // const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
-    const handleSend = async () => {
+    const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         if (text === '') return
 
         let imgUrl: {}|null = null 
@@ -160,35 +161,36 @@ export function Chat() {
                     {/* <img className="w-5 h-5 cursor-pointer" src="./camera.png" alt="" />
                     <img className="w-5 h-5 cursor-pointer" src="./mic.png" alt="" /> */}
                 </div>
-                <Input
-                    disabled={isCurrentUserBlocked || isReceiverBlocked}
-                    type="text"
-                    placeholder={ isCurrentUserBlocked || isReceiverBlocked ? 'You are blocked' : `Type a message...`}
-                    onChange={(e) => setText(e.target.value)}
-                    value={text}
-                    className={`flex-1 mx-3 bg-myBlue border-none outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-[0] ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}
-                />
-                <div className="emoji relative">
-                    <img
-                        onClick={() => setIsEmojiOpen(!isEmojiOpen)}
-                        className="w-5 h-5 cursor-pointer"
-                        src="./emoji.png"
-                        alt=""
-                    />
-                    <EmojiPicker
-                        open={isEmojiOpen}
-                        onEmojiClick={handleEmoji}
-                        className="absolute bottom-12 left-0"
-                        style={{ position: 'absolute' }}
-                        autoFocusSearch={true}
-                    />
-                </div>
-                <button 
-                    disabled={isCurrentUserBlocked || isReceiverBlocked}
-                    onClick={handleSend}
-                    className={`send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}>
-                    Send
-                </button>
+                <form onSubmit={handleSend} className='w-full flex items-center'>
+                    <Input
+                        disabled={isCurrentUserBlocked || isReceiverBlocked}
+                        type="text"
+                        placeholder={ isCurrentUserBlocked || isReceiverBlocked ? 'You are blocked' : `Type a message...`}
+                        onChange={(e) => setText(e.target.value)}
+                        value={text}
+                        className={`flex-1 mx-3 bg-myBlue border-none outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-[0] ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}
+                        />
+                    <div className="emoji relative">
+                        <img
+                            onClick={() => setIsEmojiOpen(!isEmojiOpen)}
+                            className="w-5 h-5 cursor-pointer"
+                            src="./emoji.png"
+                            alt=""
+                            />
+                        <EmojiPicker
+                            open={isEmojiOpen}
+                            onEmojiClick={handleEmoji}
+                            className="absolute bottom-12 left-0"
+                            style={{ position: 'absolute' }}
+                            autoFocusSearch={true}
+                            />
+                    </div>
+                    <button 
+                        disabled={isCurrentUserBlocked || isReceiverBlocked}
+                        className={`send-btn ml-3 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-sm ${isCurrentUserBlocked || isReceiverBlocked ? 'bg-opacity-50 cursor-not-allowed' : ''}`}>
+                        Send
+                    </button>
+                </form>
             </div>
         </div>
     )

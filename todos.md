@@ -5,7 +5,6 @@
 
 * [ ] fix: prevent users from being added more than once
 
-
 * [ ] fix scroll: on chat selection + on msg send
 * [ ] fix toast on mobile
 
@@ -15,3 +14,4 @@
 
 * [ ] make i button at the top show/hide the details cmps
 * [ ] add camera support
+* [ ] add side media gallery
