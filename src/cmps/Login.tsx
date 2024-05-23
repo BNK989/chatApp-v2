@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getRedirectResult, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { auth, db, gProvider } from '@/lib/firebase'
 import { upload } from '@/lib/upload'
@@ -65,30 +65,50 @@ export function Login() {
 
     const handleGoogleSignIn = async () => {
         try {
-            await signInWithPopup(auth, gProvider)
+
+            
+            if( window.innerWidth < 768) {
+                await signInWithRedirect(auth, gProvider) 
+                await getRedirectResult(auth)
                 .then( async (result) => {
-                    const {uid, displayName, email, photoURL: avatar} = result.user
-                    const username = displayName?.toLocaleLowerCase()
-                    const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
+                    if(!result) throw new Error('No redirect result')
+                        logIn(result.user)
+                }).catch((error) => {
+                    console.error('from promise error:',error)
+                })
+                
+            }else{
+                await signInWithPopup(auth, gProvider) 
+                .then( async (result) => {
+                    if(!result) throw new Error('No redirect result')
+                        logIn(result.user)
+                }).catch((error) => {
+                    console.error('from promise error:',error)
+                })
+            }
+                
+                    
+            // NOTE: WORKS!
+            // await signInWithPopup(auth, gProvider) 
+            //     .then( async (result) => {
+            //         const {uid, displayName, email, photoURL: avatar} = result.user
+            //         const username = displayName?.toLocaleLowerCase()
+            //         const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
 
-                 if(isNew) {
-                     await setDoc(doc(db, 'users', uid), {
-                         username,
-                         email,
-                         avatar,
-                         id: uid,
-                         blocked: [],
-                     })
+            //      if(isNew) {
+            //          await setDoc(doc(db, 'users', uid), {
+            //              username,
+            //              email,
+            //              avatar,
+            //              id: uid,
+            //              blocked: [],
+            //          })
          
-                     await setDoc(doc(db, 'userChats', uid), {
-                       chats: [],
-                     })   
-                }
+            //          await setDoc(doc(db, 'userChats', uid), {
+            //            chats: [],
+            //          })   
 
 
-            }).catch((error) => {
-                console.error('from promise error:',error)
-            })
             toast({
                 className: 'bg-black text-white border-none max-w-[75dvw] border-b-2 border-green-500',
                 title: 'Success',
@@ -102,6 +122,26 @@ export function Login() {
                 title: 'Error while logging in',
                 description: 'Please try again',
             })
+        }
+    }
+
+    const logIn = async (user: any) => {
+        const {uid, displayName, email, photoURL: avatar} = user
+        const username = displayName?.toLocaleLowerCase()
+        const isNew = user.metadata.creationTime === user.metadata.lastSignInTime
+
+     if(isNew) {
+         await setDoc(doc(db, 'users', uid), {
+             username,
+             email,
+             avatar,
+             id: uid,
+             blocked: [],
+         })
+
+         await setDoc(doc(db, 'userChats', uid), {
+           chats: [],
+         })   
         }
     }
 
