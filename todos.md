@@ -18,3 +18,4 @@
 * [ ] add camera support
 * [ ] add side media gallery
 * [ ] add Shift+Enter for new line
+* [ ] add close btn to toast

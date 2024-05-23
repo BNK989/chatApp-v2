@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { auth, db, gProvider } from '@/lib/firebase'
 import { upload } from '@/lib/upload'
@@ -179,7 +179,7 @@ export function Login() {
                 </form>
                 <div className="block md:hidden">
                     <h5>Don't have an account?</h5>
-                    <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign up</button>
+                    <button onClick={() => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign up</button>
                 </div>
                 <div className="signInWithGoogle">
                     <button onClick={handleGoogleSignIn}>Sign in with Google</button>
@@ -234,7 +234,7 @@ export function Login() {
                 </form>
                 <div className="block md:hidden">
                     <h5>Already have an account?</h5>
-                    <button onClick={(prev) => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign in</button>
+                    <button onClick={() => setIsRegister(prev => !prev)} className="w-full py-3 rounded-md bg-myBlue font-medium cursor-pointer">Sign in</button>
                 </div>
                 <div className="signInWithGoogle">
                     <button onClick={handleGoogleSignIn}>Sign up with Google</button>

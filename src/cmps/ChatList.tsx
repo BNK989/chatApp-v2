@@ -8,7 +8,6 @@ import { User, ChatItem } from '@/models/user.model'
 import { useUserStore } from '@/lib/userStore'
 import { useChatStore } from '@/lib/chatStore'
 import { useAppStore } from '@/lib/appStore'
-import { toast } from '@/components/ui/use-toast'
 
 export function ChatList() {
     const [addMode, setAddMode] = useState(false)
@@ -89,7 +88,7 @@ export function ChatList() {
             <div
                 className={`relative chatList flex-1 overflow-y-auto ${isScrolling ? 'scrolling' : ''}`}
                 onScroll={handleScroll}>
-                <div className="search flex items-center justify-between gap-5 p-5">
+                <div className="search flex items-center justify-between gap-5 p-5 ">
                     <div className="search-bar p-3 flex gap-5 rounded-lg bg-myBlue">
                         <img className="w-5 h-5" src="/search.png" alt="" />
                         <input

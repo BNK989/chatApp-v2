@@ -22,3 +22,4 @@ export const db = getFirestore()
 export const storage = getStorage()
 
 export const gProvider = new GoogleAuthProvider()//.addScope('https://www.googleapis.com/auth/profileinfo.readonly')
+app.name

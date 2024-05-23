@@ -3,8 +3,9 @@
     "trailingComma": "all",
     "printWidth": 120,
     "tabWidth": 4,
-    "arrays": "semi-spaced",
     "bracketSameLine": true,
     "semi": false,
-    "arrowParens": "always"
+    "arrowParens": "always",
+    "plugins": ["prettier-plugin-tailwindcss"],
+    "XXX-tailwindConfig": "./styles/tailwind.config.js"
 }
