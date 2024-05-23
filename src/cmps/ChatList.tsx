@@ -8,6 +8,7 @@ import { User, ChatItem } from '@/models/user.model'
 import { useUserStore } from '@/lib/userStore'
 import { useChatStore } from '@/lib/chatStore'
 import { useAppStore } from '@/lib/appStore'
+import { toast } from '@/components/ui/use-toast'
 
 export function ChatList() {
     const [addMode, setAddMode] = useState(false)
@@ -72,6 +73,17 @@ export function ChatList() {
         }
     }
 
+    // const testToast = () => {
+    //     toast({
+    //         className: 'bg-myBlue text-white border-none max-w-[75dvw] border-b-2 border-green-500',
+    //         title: 'Success',
+    //         description: 'Logged in successfully',
+    //         duration: 2000,
+    //         // asChild: true          
+            
+    //     })
+    // }
+
     return (
         <>
             <div
@@ -87,6 +99,7 @@ export function ChatList() {
                         />
                     </div>
                     <Plus isOpen={addMode} setIsOpen={setAddMode}/>
+                    {/* <button onClick={testToast}>T</button> */}
                     {/* <img
                         className="w-5 h-5 p-3 mx-2 rounded-md cursor-pointer bg-myBlue"
                         onClick={() => setAddMode(!addMode)}

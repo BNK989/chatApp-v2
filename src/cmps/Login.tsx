@@ -40,10 +40,10 @@ export function Login() {
           await signInWithEmailAndPassword(auth, email, password)
 
           toast({
-            className: 'bg-black text-white border-none left-[-100px] border-b-2 border-green-500',
+            className: 'bg-myBlue text-white border-none max-w-[75dvw] border-b-2 border-green-500',
             title: 'Success',
             description: 'Logged in successfully',
-            // duration: 200000
+            duration: 2000,
             
           })
           window.location.reload()
@@ -52,7 +52,7 @@ export function Login() {
         catch(err){
             console.error(err)
             toast({
-                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-red-500',
+                className: 'bg-black text-white border-none max-w-[75dvw] border-b-2 border-red-500',
                 title: 'Error while logging in',
                 description: 'Please try again',
                 
@@ -90,7 +90,7 @@ export function Login() {
                 console.error('from promise error:',error)
             })
             toast({
-                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-green-500',
+                className: 'bg-black text-white border-none max-w-[75dvw] border-b-2 border-green-500',
                 title: 'Success',
                 description: 'Logged in successfully',
             })
@@ -98,7 +98,7 @@ export function Login() {
         } catch (err) {
             console.error(err)
             toast({
-                className: 'bg-black text-white border-none left-[-100px] border-b-2 border-red-500',
+                className: 'bg-black text-white border-none max-w-[75dvw] border-b-2 border-red-500',
                 title: 'Error while logging in',
                 description: 'Please try again',
             })
@@ -109,7 +109,7 @@ export function Login() {
         e.preventDefault()
         if(avatar.file === null) {
             toast({
-                className: 'bg-black text-white border-t-0 border-x-0 left-[-100px] border-b-2 border-red-500',
+                className: 'bg-black text-white border-t-0 border-x-0 max-w-[75dvw] border-b-2 border-red-500',
                 title: 'Error',
                 description: 'Please upload an avatar',
             })
@@ -146,7 +146,7 @@ export function Login() {
             window.location.reload()
 
             toast({
-                className: 'bg-black text-white border-none left-[-100px]',
+                className: 'bg-black text-white border-none max-w-[75dvw]',
                 title: 'Register successful',
                 duration: 4000,
             })

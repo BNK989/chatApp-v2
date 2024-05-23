@@ -4,10 +4,10 @@
 * [x] fix username to always be capitalized
 * [x] indicate selected chat in chat preview
 
+* [x] fix toast on mobile
 * [ ] fix: prevent users from being added more than once
 
 * [ ] fix scroll: on chat selection + on msg send
-* [ ] fix toast on mobile
 * [ ] add show new message count in chat preview
 
 * [ ] Make avatar images not show up when user is blocked

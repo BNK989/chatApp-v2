@@ -8,8 +8,6 @@ export function MsgItemPreview({isActive, chat, doThis}: {isActive: boolean, cha
   const { currentUser } = useUserStore()
   const isBlocked = user.blocked!.includes(currentUser!.id)
   if(isBlocked) delete user.avatar
-
-  console.log('isActive:', isActive)
   
   return (
     <div onClick={doThis} 
