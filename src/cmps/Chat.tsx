@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input'
 import { db } from '@/lib/firebase'
-import EmojiPicker from 'emoji-picker-react'
+import EmojiPicker, { Theme } from 'emoji-picker-react'
 import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { useEffect, useRef, useState } from 'react'
 import { MsgItem } from './MsgItem'
@@ -180,9 +180,12 @@ export function Chat() {
                         <EmojiPicker
                             open={isEmojiOpen}
                             onEmojiClick={handleEmoji}
-                            className="absolute bottom-12 left-0"
-                            style={{ position: 'absolute' }}
+                            className="bottom-16 left-6 md:left-auto "
+                            style={{ position: 'fixed' }}
+                            lazyLoadEmojis={true}
                             autoFocusSearch={true}
+                            theme={"auto" as Theme}
+                            width={300}
                             />
                     </div>
                     <button 

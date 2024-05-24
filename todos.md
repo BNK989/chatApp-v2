@@ -6,7 +6,7 @@
 
 * [x] fix toast on mobile
 * [x] add toast for too short pw
-* [ ] fix emoji popup window on mobile
+* [x] fix emoji popup window on mobile
 * [x] fix add window on mobile
 * [ ] add logger
 
