@@ -30,24 +30,31 @@ export function AddUser({ closeSelf }: { closeSelf: () => void }) {
     }
 
     const handleSearch = async (e: any) => {
-        e.preventDefault()
-        getActiveChats()
-        const formData = new FormData(e.currentTarget)
-        const username = formData.get('username') as string
-
+        e.preventDefault();
+        getActiveChats();
+        const formData = new FormData(e.currentTarget);
+        const username = formData.get('username') as string;
+    
         try {
-            const userRef = collection(db, 'users')
-
-            const q = query(userRef, where('username', '>=' , username.toLowerCase()))
-            const querySnapshot = await getDocs(q)
-            console.log('querySnapshot:', querySnapshot.docs.map((d) => d.data()) as User[])
+            const userRef = collection(db, 'users');
+    
+            // This assumes you have an index set up on the 'username' field
+            const q = query(userRef, where('username', '>=', username.toLowerCase()), where('username', '<=', username.toLowerCase() + '\uf8ff'));
+            const querySnapshot = await getDocs(q);
+    
+            // console.log('querySnapshot:', querySnapshot.docs.map((d) => d.data()) as User[]);
             if (!querySnapshot.empty) {
-                setUsers(querySnapshot.docs.map((d) => d.data()) as User[])
+                const users = querySnapshot.docs.map((d) => d.data()) as User[];
+    
+                // Further filter results on the client side to match the partial string anywhere in the username
+                const filteredUsers = users.filter(user => user.username.toLowerCase().includes(username.toLowerCase()));
+    
+                setUsers(filteredUsers);
             }
-        } catch (error) {
-            console.error(error)
+        } catch (err) {
+            console.error(err);
         }
-    }
+    }    
 
     const handleAdd = async (user: User) => {
         const chatRef = collection(db, 'chats')

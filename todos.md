@@ -8,7 +8,8 @@
 * [x] add toast for too short pw
 * [x] fix emoji popup window on mobile
 * [x] fix add window on mobile
-* [ ] add logger
+* [x] Improve user search
+* [ ] add logger pino (already installed)
 
 
 * [ ] fix: prevent users from being added more than once
@@ -17,7 +18,6 @@
 * [ ] add show new message count in chat preview
 
 * [ ] Make avatar images not show up when user is blocked
-* [ ] Improve user search
 * [ ] Improve search in ChatList cmp
 
 * [ ] make i button at the top show/hide the details cmps
