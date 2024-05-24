@@ -5,9 +5,9 @@
 * [x] indicate selected chat in chat preview
 
 * [x] fix toast on mobile
-* [ ] add toast for too short pw
+* [x] add toast for too short pw
 * [ ] fix emoji popup window on mobile
-* [ ] fix add window on mobile
+* [x] fix add window on mobile
 * [ ] add logger
 
 

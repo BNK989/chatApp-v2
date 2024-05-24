@@ -87,18 +87,18 @@ export function AddUser({ closeSelf }: { closeSelf: () => void }) {
         } 
     }
     return (
-        <div className="absolute w-max h-max p-7 bg-myBlue rounded inset-0 m-auto">
+        <div className="absolute max-w-[75dvw] h-max p-7 bg-myBlue rounded inset-0 m-auto md:w-1/3">
             <button onClick={closeSelf} className="close absolute -top-3 -right-2 rounded bg-myBlue px-2">
                 X
             </button>
-            <form onSubmit={handleSearch} className="flex gap-5" action="">
+            <form onSubmit={handleSearch} className="flex gap-5 flex-wrap" action="">
                 <input
-                    className="p-5 rounded border-none outline-none bg-slate-50 placeholder:text-black text-black"
+                    className="p-5 rounded border-none outline-none bg-slate-50 placeholder:text-black text-black flex-1"
                     type="text"
                     placeholder="Username"
                     name="username"
                 />
-                <button className="p-5 rounded text-white bg-blue-600">Search</button>
+                <button className="p-5 rounded text-white bg-blue-600 flex-1">Search</button>
             </form>
             {users.length > 0 && (
                 <div className="user mt-8">
@@ -108,10 +108,10 @@ export function AddUser({ closeSelf }: { closeSelf: () => void }) {
                                 return (
                                     <div className='w-full flex justify-between items-center'>
                                         <div className="flex gap-3 items-center">
-                                            <QuickAvatar key={user.id} user={user} />
-                                            <span className="capitalize">{user.username}</span>
+                                            <QuickAvatar key={user.id} user={user} className='w-8 h-8 md:w-12 md:h-12'/>
+                                            <span className="capitalize text-sm md:text-base">{user.username}</span>
                                         </div>
-                                        <button disabled={chatsIds.includes(user.id)} onClick={() => handleAdd(user)} className={`w-20 p-3 ${chatsIds.includes(user.id) ? 'bg-blue-300' : 'bg-blue-600'} text-white rounded`}>
+                                        <button disabled={chatsIds.includes(user.id)} onClick={() => handleAdd(user)} className={`min-w-20 p-2 text-sm md:text-base ${chatsIds.includes(user.id) ? 'bg-blue-300' : 'bg-blue-600'} text-white rounded`}>
                                             {chatsIds.includes(user.id) ? 'Added' : 'Add User'}
                                         </button>
                                     </div>
