@@ -35,6 +35,8 @@ export function Login() {
         console.log('formDataObject:', formDataObject)
         
         if (!email || !password) return
+
+        
         setLoading(true)
         try{
           await signInWithEmailAndPassword(auth, email, password)
@@ -70,11 +72,6 @@ export function Login() {
             if( window.innerWidth < 768) {
                 await signInWithRedirect(auth, gProvider) 
                 await getRedirectResult(auth)
-
-            
-            if( window.innerWidth < 768) {
-                await signInWithRedirect(auth, gProvider) 
-                await getRedirectResult(auth)
                 .then( async (result) => {
                     if(!result) throw new Error('No redirect result')
                         logIn(result.user)
@@ -99,38 +96,7 @@ export function Login() {
             //         const {uid, displayName, email, photoURL: avatar} = result.user
             //         const username = displayName?.toLocaleLowerCase()
             //         const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
-                    if(!result) throw new Error('No redirect result')
-                        logIn(result.user)
-                }).catch((error) => {
-                    console.error('from promise error:',error)
-                })
-                
-            }else{
-                await signInWithPopup(auth, gProvider) 
-                .then( async (result) => {
-                    if(!result) throw new Error('No redirect result')
-                        logIn(result.user)
-                }).catch((error) => {
-                    console.error('from promise error:',error)
-                })
-            }
-                
-                    
-            // NOTE: WORKS!
-            // await signInWithPopup(auth, gProvider) 
-            //     .then( async (result) => {
-            //         const {uid, displayName, email, photoURL: avatar} = result.user
-            //         const username = displayName?.toLocaleLowerCase()
-            //         const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
 
-            //      if(isNew) {
-            //          await setDoc(doc(db, 'users', uid), {
-            //              username,
-            //              email,
-            //              avatar,
-            //              id: uid,
-            //              blocked: [],
-            //          })
             //      if(isNew) {
             //          await setDoc(doc(db, 'users', uid), {
             //              username,
@@ -140,11 +106,6 @@ export function Login() {
             //              blocked: [],
             //          })
          
-            //          await setDoc(doc(db, 'userChats', uid), {
-            //            chats: [],
-            //          })   
-
-
             //          await setDoc(doc(db, 'userChats', uid), {
             //            chats: [],
             //          })   
@@ -203,8 +164,20 @@ export function Login() {
         username = username?.toLowerCase()
         email = email?.toLowerCase()
         
-
+        
         if (!username || !email || !password) return
+        if (password.length < 6){
+
+            toast({
+                className: 'bg-myBlue text-white border-x-0 border-t-0 max-w-[75dvw] border-b-4 border-red-500',
+                title: 'Opps password too short',
+                description: 'Password must be at least 6 characters long',
+                duration: 2000,
+                
+            })
+            setLoading(false)
+             throw new Error('Password must be at least 6 characters long')
+            }
 
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
@@ -233,6 +206,7 @@ export function Login() {
             })
         } catch (err) {
             console.error('err:', err)
+            
         } finally {
             setLoading(false)
         }

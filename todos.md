@@ -5,6 +5,12 @@
 * [x] indicate selected chat in chat preview
 
 * [x] fix toast on mobile
+* [ ] add toast for too short pw
+* [ ] fix emoji popup window on mobile
+* [ ] fix add window on mobile
+* [ ] add logger
+
+
 * [ ] fix: prevent users from being added more than once
 
 * [ ] fix scroll: on chat selection + on msg send
