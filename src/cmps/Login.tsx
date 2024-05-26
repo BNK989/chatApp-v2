@@ -148,8 +148,8 @@ export function Login() {
          await setDoc(doc(db, 'userChats', uid), {
            chats: [],
          })   
-         window.location.reload()
         }
+        window.location.reload()
     }
 
     const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
