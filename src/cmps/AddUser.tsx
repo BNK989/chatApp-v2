@@ -25,10 +25,12 @@ export function AddUser({ closeSelf }: { closeSelf: () => void }) {
     const getActiveChats = async () => {
         const activeChats = await getDoc(doc(db, 'userChats', currentUser!.id))
         const { chats } = activeChats.data()!
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const chatsIds = chats.map((c: any) => c.receiverId)
         setChatsIds(chatsIds)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleSearch = async (e: any) => {
         e.preventDefault();
         getActiveChats();

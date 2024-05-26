@@ -1,15 +1,29 @@
-import { FormEvent, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FormEvent, useEffect, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
 import { UserCredential, createUserWithEmailAndPassword, getRedirectResult, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { auth, db, gProvider } from '@/lib/firebase'
 import { upload } from '@/lib/upload'
 import { RotatingLines } from 'react-loader-spinner'
+// import logger from '../logger'
 
 interface UserRegistration {
     username?: string
     email?: string
     password?: string
+}
+
+type UserType = UserCredential['user']
+declare interface FullUser extends UserType {
+    createdAt: Date
+    lastLoginAt: Date
+    metadata: {
+        createdAt : string
+        lastLoginAt : string
+        lastSignInTime : string
+        creationTime : string
+    }
 }
 
 export function Login() {
@@ -21,6 +35,18 @@ export function Login() {
     })
     const [loading, setLoading] = useState(false)
     const [isRegister, setIsRegister] = useState(false)
+
+    useEffect( () => {
+        if( window.innerWidth < 768) {
+            getRedirectResult(auth)
+            .then(async (result) => {
+                if(!result) throw new Error('No redirect result')
+                    logIn(result.user as FullUser)
+                })
+            .catch(err => {
+                console.error('from promise error:',err)})
+        }
+    }, [])
 
     const handleAvatar = (e: any) => {
         if (!e.target.files[0]) return
@@ -66,50 +92,21 @@ export function Login() {
     }
 
     const handleGoogleSignIn = async () => {
-        try {
 
-            
+        try {
+   
             if( window.innerWidth < 768) {
                 await signInWithRedirect(auth, gProvider) 
-                await getRedirectResult(auth)
-                .then( async (result) => {
-                    if(!result) throw new Error('No redirect result')
-                        logIn(result.user)
-                }).catch((error) => {
-                    console.error('from promise error:',error)
-                })
                 
             }else{
                 await signInWithPopup(auth, gProvider) 
                 .then( async (result) => {
                     if(!result) throw new Error('No redirect result')
-                        logIn(result.user)
+                        logIn(result.user as FullUser)
                 }).catch((error) => {
                     console.error('from promise error:',error)
                 })
             }
-                
-                    
-            // NOTE: WORKS!
-            // await signInWithPopup(auth, gProvider) 
-            //     .then( async (result) => {
-            //         const {uid, displayName, email, photoURL: avatar} = result.user
-            //         const username = displayName?.toLocaleLowerCase()
-            //         const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime
-
-            //      if(isNew) {
-            //          await setDoc(doc(db, 'users', uid), {
-            //              username,
-            //              email,
-            //              avatar,
-            //              id: uid,
-            //              blocked: [],
-            //          })
-         
-            //          await setDoc(doc(db, 'userChats', uid), {
-            //            chats: [],
-            //          })   
-
 
             toast({
                 className: 'bg-black text-white border-none max-w-[75dvw] border-b-2 border-green-500',
@@ -127,10 +124,17 @@ export function Login() {
         }
     }
 
-    const logIn = async (user: UserCredential['user']) => {
+    const logIn = async (user: FullUser) => {
         const {uid, displayName, email, photoURL: avatar} = user
         const username = displayName?.toLocaleLowerCase()
-        const isNew = user.metadata.creationTime === user.metadata.lastSignInTime
+        const lastSignInTime = new Date(+user.metadata.lastLoginAt).getTime()
+        const createdAt = new Date(+user.metadata.createdAt).getTime()
+
+        const isNew = Math.abs(
+            (lastSignInTime - createdAt ) / 1000
+        ) < 120
+        // logger.info(new Date(user.metadata.lastSignInTime!).getTime())
+
 
      if(isNew) {
          await setDoc(doc(db, 'users', uid), {
@@ -144,6 +148,7 @@ export function Login() {
          await setDoc(doc(db, 'userChats', uid), {
            chats: [],
          })   
+         window.location.reload()
         }
     }
 
@@ -160,7 +165,8 @@ export function Login() {
         setLoading(true)
         const formData = new FormData(e.currentTarget)
         const formDataObject = Object.fromEntries(formData) as UserRegistration
-        let { username, email, password } = formDataObject
+        let { username, email } = formDataObject
+        const { password } = formDataObject
         username = username?.toLowerCase()
         email = email?.toLowerCase()
         
