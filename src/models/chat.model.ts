@@ -1,3 +1,4 @@
+// import { firestore } from 'firebase';
 
 export interface ChatText {
     createdAt: Date
@@ -9,7 +10,7 @@ export interface ChatText {
 export type Message = {
     senderId: string
     text: string
-    createdAt: Date 
+    createdAt: Date | string
     img?: string
 }
 //get an obj with user, text, time and possibly img.
