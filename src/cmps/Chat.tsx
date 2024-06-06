@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Input } from '@/components/ui/input'
 import { db } from '@/lib/firebase'
 import EmojiPicker, { Theme } from 'emoji-picker-react'
@@ -13,11 +14,16 @@ import { useUserStore } from '@/lib/userStore'
 import { useAppStore } from '@/lib/appStore'
 // import { AddUser } from './AddUser'
 
+type ImgState = {
+    file: File | null;
+    url: string;
+}
+
 export function Chat() {
-    const [chat, setChat] = useState<ChatText|object|any>({})
+    const [chat, setChat] = useState<ChatText>()
     const [isEmojiOpen, setIsEmojiOpen] = useState(false)
     const [text, setText] = useState('')
-    const [img, setImg] = useState({file: null, url: ''})
+    const [img, setImg] = useState<ImgState>({file: null, url: ''})
     const endRef = useRef<HTMLDivElement>(null)
 
     const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore()
@@ -45,8 +51,8 @@ export function Chat() {
         return () => unSub()
     }, [chatId])
 
-    const handleImg = (e: any) => {
-        if (!e.target.files[0]) return
+    const handleImg = (e: React.ChangeEvent<HTMLInputElement>)=> {
+        if(!e.target.files || !e.target.files![0]) return
         setImg({ file: e.target.files[0], url: URL.createObjectURL(e.target.files[0]) })
     }
 
@@ -61,7 +67,7 @@ export function Chat() {
         e.preventDefault()
         if (text === '') return
 
-        let imgUrl: {}|null = null 
+        let imgUrl: string | null = null 
 
         try{
 
@@ -133,7 +139,7 @@ export function Chat() {
             <div className="center p-3 flex gap-5 flex-col flex-1 border-b border-myWhite overflow-y-auto">
                 {/* START OF MSGs */}
                 
-                {chat.messages && chat.messages.map((c: Message) => {
+                {chat?.messages && chat?.messages.map((c: Message) => {
                     return <MsgItem 
                             key={c.createdAt.toString()}
                             msg={c} user={c.senderId === currentUser?.id ? currentUser : user!}

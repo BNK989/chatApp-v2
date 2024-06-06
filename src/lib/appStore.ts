@@ -7,6 +7,7 @@ type State = {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useAppStore = create<State>((set: (arg: any) => void) => ({
   currentScreenIndex: 0,
   isLoading: true,
@@ -28,6 +29,3 @@ export const useAppStore = create<State>((set: (arg: any) => void) => ({
 //     } 
 
 // }))
-
-
-
