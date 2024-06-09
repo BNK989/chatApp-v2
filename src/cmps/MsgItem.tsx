@@ -1,18 +1,13 @@
-// import { User } from '@/models/user.model'
-// import { Message } from '@/models/chat.model'
+import { User } from '@/models/user.model'
+import { Message } from '@/models/chat.model'
 import { QuickAvatar } from './QuickAvatar'
 import { isRTL } from '@/lib/utils'
-export function MsgItem({ msg, user, isMe }){//: { msg: Message; user: User; isMe: boolean }) {
+export function MsgItem({ msg, user, isMe } : { msg: Message; user: User; isMe: boolean }) {
 
-
-    const timeStamp = (msg.createdAt.seconds * 1000) + (msg.createdAt.nanoseconds / 1000000)
-
-    // const createdAt: string = new Date(msg.createdAt).toLocaleTimeString()
+    const { seconds , nanoseconds } = msg.createdAt as unknown as {seconds: number, nanoseconds: number}
+    const timeStamp = (seconds * 1000) + (nanoseconds / 1000000)
     const createdAt = new Date(timeStamp).toLocaleTimeString()
-    console.log('isMe:', isMe)
-
     const isRtl = isRTL(msg.text)
-
 
     return (
         <div className={`message  flex gap-5 ${isMe ? 'flex-row-reverse' : ''}`}>
